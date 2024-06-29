@@ -116,7 +116,6 @@ Using this package will bind process event listeners when `graceful.listen()` is
 * `process.once('SIGTERM')` - will exit gracefully
 * `process.once('SIGHUP')` - will exit gracefully
 * `process.once('SIGINT')` - will exit gracefully
-* `process.once('SIGUSR2')` - will exit gracefully (nodemon support)
 
 This package also prevents multiple process/SIG events from triggering multiple graceful exits. Only one graceful exit can occur at a time.
 

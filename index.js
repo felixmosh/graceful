@@ -121,9 +121,7 @@ class Graceful {
     });
 
     // handle graceful restarts
-    // support nodemon (SIGUSR2 as well)
-    // <https://github.com/remy/nodemon#controlling-shutdown-of-your-script>
-    for (const sig of ['SIGTERM', 'SIGHUP', 'SIGINT', 'SIGUSR2']) {
+    for (const sig of ['SIGTERM', 'SIGHUP', 'SIGINT']) {
       process.once(sig, async () => {
         await this.exit(sig);
       });
