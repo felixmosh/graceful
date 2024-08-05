@@ -279,14 +279,22 @@ class Graceful {
       await Promise.all([
         // servers
         this.stopServers(code),
-        // redisClients
-        this.stopRedisClients(code),
-        // mongooses
-        this.stopMongooses(code),
         // brees
         this.stopBrees(code),
         // custom handlers
         this.stopCustomHandlers(code)
+      ]);
+      //
+      // don't stop redis/mongoose until all other operations have ended
+      // (a lot of time the server cleanup will release counters/limiters)
+      // (or the job scheduler or application-layer code will require DB connections)
+      // (and closing them early may also cause uncaught exceptions)
+      //
+      await Promise.all([
+        // redisClients
+        this.stopRedisClients(code),
+        // mongooses
+        this.stopMongooses(code)
       ]);
       this.config.logger.info('Gracefully exited', {
         code,
