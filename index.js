@@ -87,8 +87,9 @@ class Graceful {
     // handle uncaught promises
     // <https://nodejs.org/api/process.html#event-unhandledrejection>
     process.on('unhandledRejection', (err) => {
-      // we don't want to log here, we want to throw the error
-      // so that processes exit or bubble up to middleware error handling
+      // always log to console the error (e.g. so we can see it on pm2 logs)
+      console.error(err);
+      // we want to throw so that processes exit or bubble up to middleware error handling
       // we need to support listening to unhandledRejections (backward compatibility)
       // (even though node is deprecating this in future versions)
       // <https://developer.ibm.com/blogs/nodejs-15-release-blog/>
@@ -97,6 +98,8 @@ class Graceful {
 
     // handle uncaught exceptions
     process.once('uncaughtException', (err) => {
+      // always log to console the error (e.g. so we can see it on pm2 logs)
+      console.error(err);
       if (this.config.hideMeta)
         this.config.logger.error(err, { [this.config.hideMeta]: true });
       else this.config.logger.error(err);
