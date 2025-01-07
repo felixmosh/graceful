@@ -97,18 +97,9 @@ class Graceful {
     });
 
     // handle uncaught exceptions
-    process.once('uncaughtException', (err) => {
-      // always log to console the error (e.g. so we can see it on pm2 logs)
-      console.error(err);
-      if (this.config.hideMeta)
-        this.config.logger.error(err, { [this.config.hideMeta]: true });
-      else this.config.logger.error(err);
-      // artificial timeout to allow logger to store uncaught exception to db
-      if (this.config.uncaughtExceptionTimeoutMs)
-        setTimeout(() => {
-          process.exit(1);
-        }, this.config.uncaughtExceptionTimeoutMs);
-      else process.exit(1);
+    process.on('uncaughtExceptionMonitor', (err, origin) => {
+      console.error(err, { origin });
+      this.config.logger.fatal(err, { origin });
     });
 
     // handle windows support (signals not available)
